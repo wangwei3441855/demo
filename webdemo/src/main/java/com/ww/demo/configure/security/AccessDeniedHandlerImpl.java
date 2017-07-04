@@ -23,7 +23,6 @@ public class AccessDeniedHandlerImpl implements AccessDeniedHandler
             AccessDeniedException e) throws IOException, ServletException
     {
         log.info("[AccessDeniedHandlerImpl.handle] start");
-
         boolean isAjax = BaseController.isAjaxRequest(httpServletRequest);
         String message = e.getMessage();
         if (!isAjax)
