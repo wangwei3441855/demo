@@ -36,6 +36,7 @@ public class AccessDecisionManagerFilter implements AccessDecisionManager
             {
                 if (needRole.trim().equals(gra.getAuthority().trim()))
                 {
+                    log.info("[AccessDecisionManagerFilter.decide] Access success");
                     return;
                 }
             }
