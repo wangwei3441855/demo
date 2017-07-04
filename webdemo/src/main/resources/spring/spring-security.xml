@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:security="http://www.springframework.org/schema/security"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+               http://www.springframework.org/schema/beans/spring-beans.xsd
+            http://www.springframework.org/schema/security
+            http://www.springframework.org/schema/security/spring-security-4.2.xsd">
+
+
+    <security:http pattern="/static/**" security="none"/>
+    <security:http pattern="/login.html**" security="none"/>
+    <security:http pattern="/403.html**" security="none"/>
+    <security:http pattern="/service/sys/getImg**" security="none"/>
+
+    <!--  Spring-Security 的配置 -->
+    <security:http auto-config="true" use-expressions="true">
+        <security:access-denied-handler ref="accessDeniedHandlerImpl"/>
+        <!-- <security:intercept-url pattern="/service/admin/**" access="hasAnyRole('ROLE_ADMIN')"/>
+         <security:intercept-url pattern="/**" access="hasAnyRole('ROLE_USER','ROLE_ADMIN')"/>
+         <security:intercept-url pattern="/index.html" access="hasAnyRole('ROLE_USER','ROLE_ADMIN')"/>-->
+        <security:custom-filter before="FILTER_SECURITY_INTERCEPTOR" ref="securityInterceptorFilter"/>
+        <security:csrf disabled="true"/>
+        <security:form-login login-page="/login.html"
+                             username-parameter="userName"
+                             password-parameter="password"
+                             login-processing-url="/sys/login"
+                             authentication-failure-handler-ref="authenticationFailure"
+                             authentication-success-handler-ref="authenticationSuccess"/>
+        <!--default-target-url="/index.html"-->
+
+        <security:logout
+                logout-url="/sys/logout"
+                logout-success-url="/login.html"
+        />
+        <security:session-management>
+            <security:concurrency-control max-sessions="1"/>
+        </security:session-management>
+    </security:http>
+
+    <bean id="securityInterceptorFilter"
+          class="org.springframework.security.web.access.intercept.FilterSecurityInterceptor ">
+        <!-- FilterInvocationSecurityMetadataSource 接口实现类 -->
+        <property name="securityMetadataSource"
+                  ref="securityMetadataSource"/>
+        <!-- 鉴定管理类 -->
+        <property name="authenticationManager" ref="authenticationManager"/>
+        <!-- AccessDecisionManager 接口实现类 -->
+        <property name="accessDecisionManager"
+                  ref="accessDecisionManagerFilter"/>
+    </bean>
+
+    <!-- 指定一个自定义的authentication-manager :customUserDetailsService -->
+    <security:authentication-manager id="authenticationManager">
+        <security:authentication-provider user-service-ref="userDetailsServiceImpl">
+            <security:password-encoder ref="passwordEncoder"/>
+        </security:authentication-provider>
+    </security:authentication-manager>
+
+
+    <bean id="securityMetadataSource" class="com.ww.demo.configure.security.SecurityMetadataSource"/>
+    <!--    <bean id="authenticationManagerFilter"
+              class="com.ww.demo.configure.security.AuthenticationManagerFilter"/>-->
+    <bean id="accessDecisionManagerFilter"
+          class="com.ww.demo.configure.security.AccessDecisionManagerFilter"/>
+
+
+    <bean id="accessDeniedHandlerImpl" class="com.ww.demo.configure.security.AccessDeniedHandlerImpl"/>
+
+    <bean id="authenticationFailure" class="com.ww.demo.configure.security.AuthenticationFailure"/>
+    <bean id="authenticationSuccess" class="com.ww.demo.configure.security.AuthenticationSucess"/>
+    <!-- 对密码进行MD5编码 -->
+    <bean id="passwordEncoder"
+          class="org.springframework.security.authentication.encoding.Md5PasswordEncoder"/>
+    <bean id="userDetailsServiceImpl" class="com.ww.demo.configure.security.UserDetailsServiceImpl"/>
+</beans>

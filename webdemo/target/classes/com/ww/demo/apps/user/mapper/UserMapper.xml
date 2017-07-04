@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.ww.demo.apps.user.mapper.UserMapper">
+    <insert id="addUser" parameterType="com.ww.demo.apps.user.domain.UserInfo">
+        INSERT INTO USER_INFO (FLOW_ID, USER_NAME,PASSWORD, TEL) VALUES (#{flowId}, #{userName}, #{password}, #{tel});
+    </insert>
+
+    <select id="getUserByName" resultType="com.ww.demo.apps.user.domain.UserInfo">
+        SELECT
+          USER_ID AS userId,
+          USER_NAME AS userName,
+          PASSWORD AS password,
+          STATUS AS status,
+          DESCN AS descn
+        FROM USER_INFO T
+        WHERE
+          T.USER_NAME = #{_parameter}
+    </select>
+</mapper>

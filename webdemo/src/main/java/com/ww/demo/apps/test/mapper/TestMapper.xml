@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.ww.demo.apps.test.mapper.TestMapper">
+    <select id="getList"
+            resultType="com.ww.demo.apps.test.domain.Test">
+        SELECT A as a,B as b,C as c FROM TEST;
+    </select>
+</mapper>

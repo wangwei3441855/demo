@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.ww.demo.apps.user.mapper.RoleMapper">
+    <select id="getRolesByUserId" resultType="com.ww.demo.apps.user.domain.Role">
+        SELECT
+	      R.ROLE_ID AS roleId,
+	      R.ROLE_NAME AS roleName,
+	      R.DESCN AS descn
+        FROM
+	      USER_ROLE UR
+        LEFT JOIN ROLE R ON UR.ROLE_ID = R.ROLE_ID
+        WHERE
+	      UR.USER_ID = #{_parameter}
+    </select>
+
+    <select id="getAllRoles" resultType="com.ww.demo.apps.user.domain.Role">
+        SELECT
+        R.ROLE_ID AS roleId,
+        R.ROLE_NAME AS roleName,
+        R.DESCN AS descn
+        FROM
+        USER_ROLE UR
+        LEFT JOIN ROLE R ON UR.ROLE_ID = R.ROLE_ID
+    </select>
+
+    <select id="getResource" resultType="com.ww.demo.apps.user.domain.ResourcesInfo">
+        SELECT
+        R.ROLE_ID AS roleId,
+        R.ROLE_NAME AS roleName,
+        I.RESOURCE_CONTENT AS resourceContent,
+        I.ENABLED AS enabled,
+        R.DESCN AS descn
+        FROM
+        RESOURCES_INFO I
+        LEFT JOIN ROLE_RESOURCE RR ON I.ID = RR.RESOURCE_ID
+        LEFT JOIN ROLE R ON R.ROLE_ID = RR.ROLE_ID
+        <if test="roleName !=null and roleName !=''">
+            AND R.ROLE_NAME = #{roleName}
+        </if>
+        <if test="roleId !=null and roleId !=''">
+            AND R.ROLE_ID = #{roleId}
+        </if>
+    </select>
+</mapper>
