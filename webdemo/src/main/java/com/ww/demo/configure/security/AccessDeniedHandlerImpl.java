@@ -27,12 +27,14 @@ public class AccessDeniedHandlerImpl implements AccessDeniedHandler
         String message = e.getMessage();
         if (!isAjax)
         {
+            log.info("[AccessDeniedHandlerImpl.handle] isAjax false");
             String contextPath = httpServletRequest.getContextPath();
             String page403 = contextPath + "/403.html?msg=" + message;
             httpServletResponse.sendRedirect(page403);
         }
         else
         {
+            log.info("[AccessDeniedHandlerImpl.handle] isAjax true");
             httpServletResponse.setStatus(403);
             Map<String, String> map = new HashMap<String, String>();
             map.put("msg", message);
